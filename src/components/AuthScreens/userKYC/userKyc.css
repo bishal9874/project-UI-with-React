@@ -1,0 +1,17 @@
+.userkyc_form{
+    width: 40%;
+    align-items: center;
+    justify-content: center;
+
+}
+.kyc_section{
+   display: flex;
+   flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 5%;
+}
+.kyc{
+    width: 30%;
+    height: 30%;
+}
