@@ -5,6 +5,7 @@ import Layouts from "./Layouts";
 
 import { useSelector } from "react-redux";
 import Login from "./components/AuthScreens/login/Login";
+import MainDashSection from "./components/Dashboard/MainDashSection/MainDashSection";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -20,6 +21,10 @@ function App() {
         <Route
             path="/login"
             element={access_token ? <Navigate to={"/logincam"} /> : <Login />}
+          />
+          <Route
+            path="/dashboard"
+            element={ <MainDashSection/>}
           />
         </Routes>
       </BrowserRouter>
