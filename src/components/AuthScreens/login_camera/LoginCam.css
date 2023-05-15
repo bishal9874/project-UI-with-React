@@ -1,4 +1,4 @@
-.LoginCapture {
+/* .LoginCapture {
     display: flex;
     width: 100%;
     text-align: center;
@@ -19,9 +19,20 @@
     border: 2px solid black;
     background-color: black;
     color: white;
-  }
-  
-  .LoginRefresh{
+  } */
+.paddings.flexCenter.cam-container{
+  flex-direction: column;
+}
+.paddings.canvasContainer{
+  display: flex;
+  flex-direction: row;
+  gap: 5rem;
+}
+.loFace_button{
+  gap: 2rem;
+  display: flex;
+}
+  /* .LoginRefresh{
     display: flex;
     width: 100%;
     text-align: center;
@@ -44,7 +55,7 @@
     color: white ;
     
 
-  }
+  } */
 
 /* .Container {
     display: flex;

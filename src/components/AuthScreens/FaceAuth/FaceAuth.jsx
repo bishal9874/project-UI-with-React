@@ -1,13 +1,13 @@
 import React from "react";
 import "./FaceAuth.css";
-import { useState ,useEffect } from "react";
+import { useState, useEffect } from "react";
 import LoginCamera from "../login_camera/LoginCamera";
-import { useFaceVerify_userMutation } from "../../../../API/rationApi";
-import { CircularProgress, Typography ,Alert} from '@mui/material';
-import { getToken, storeToken, getverify } from "../../../../API/localStorage";
+import { useFaceVerify_userMutation } from "../../../API/rationApi";
+import { CircularProgress, Typography, Alert } from "@mui/material";
+import { getToken, storeToken, getverify,removeToken} from "../../../API/localStorage";
 import { useDispatch } from "react-redux";
-import { setUsertoken, unSetUsertoken } from "../../../../features/authSlice";
-import { useNavigate } from 'react-router-dom';
+import { setUsertoken, unSetUsertoken } from "../../../features/authSlice";
+import { useNavigate } from "react-router-dom";
 
 const FaceAuth = () => {
   const [imageData, setImageData] = useState(null);
@@ -18,6 +18,7 @@ const FaceAuth = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [showPopup, setShowPopup] = useState(false);
 
   const onCapturePhoto = (imageData) => {
     setImageData(imageData);
@@ -25,6 +26,13 @@ const FaceAuth = () => {
     console.log(imageData); // update the state with the captured image data
   };
 
+  const handleLogout = () => {
+    dispatch(unSetUsertoken({ access_token: null }));
+    removeToken();
+    navigate("/login");
+  };
+
+  
   const handlesubmit = async (e) => {
     e.preventDefault();
 
@@ -32,72 +40,73 @@ const FaceAuth = () => {
       face_image: imageData,
     };
     const res = await faceVerifyUser(loginFaceVerifyData);
-    console.log(res)
+    console.log(res);
     if (res.error) {
       setServerError(res.error.data);
     } else if (res.data) {
       storeToken(res.data.token);
-      console.log(res.data.isfaceVerify)
-      getverify({ isverify: res.data.isfaceVerify }); 
-      
+      console.log(res.data.isfaceVerify);
+      getverify({ isverify: res.data.isfaceVerify });
+
       let { access_token } = getToken();
       dispatch(setUsertoken({ access_token: access_token }));
-      navigate('/dashboard');
-      
+      navigate("/dashboard");
     }
   };
-  let { access_token } = getToken()
+
+  let { access_token } = getToken();
   useEffect(() => {
-    dispatch(setUsertoken({ access_token: access_token }))
-  }, [access_token, dispatch])
+    dispatch(setUsertoken({ access_token: access_token }));
+  }, [access_token, dispatch]);
+
   return (
-    <section className="container">
-      <div>
-        <a href="/">
+    <section>
+      <div className="flexCenter innerwidth f-header-container">
         <img
-          src="src/assets/auth-img-7.png"
+          src="src/assets/png/logo-no-background.png"
           alt="logo"
-          width={150}
+          width={180}
+          onClick={handleLogout}
         />
-        </a>
         {server_error.errors && server_error.errors.non_field_errors ? (
-          <Alert severity='error'>{server_error.errors.non_field_errors[0]}</Alert>
+          <Alert severity="error">
+            {server_error.errors.non_field_errors[0]}
+          </Alert>
         ) : (
-          ''
+          ""
         )}
         {server_error.detail ? (
-          <Alert severity='error'>{server_error.detail}</Alert>
+          <Alert severity="error">{server_error.detail}</Alert>
         ) : (
-          ''
+          ""
         )}
-        <img
-          className="reg-loginIMage"
-          src="src/assets/auth-img-7.png"
-          alt=""
-        />
         <form onSubmit={handlesubmit}>
           {/* your form elements here */}
           {isLoading ? (
             <CircularProgress />
           ) : (
-            <button type="submit" className="face_check_from_DB">
+            <button type="submit" className="face_auth_button">
               Verify
             </button>
           )}
         </form>
       </div>
-
-      <div>
-        <LoginCamera onCapturePhoto={onCapturePhoto} />
+     <section>
+     
+     <div className="flexCenter innerWidth f-body">
+        <p className="primaryText">You have Capture your face only</p>
+         <LoginCamera onCapturePhoto={onCapturePhoto} />
         {server_error.errors && server_error.errors.face_image ? (
-          <Typography style={{ fontSize: 12, color: 'red' }}>
-            {' '}
+          <Typography style={{ fontSize: 12, color: "red" }}>
+            {" "}
             {server_error.errors.face_image[0]}
           </Typography>
         ) : (
-          ' '
+          " "
         )}
+        
       </div>
+     </section>
     </section>
   );
 };
